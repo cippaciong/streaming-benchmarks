@@ -10,3 +10,12 @@ download-cache
 .project
 .settings
 bin
+
+# Ignore build directories
+apache-apex-core-*
+apache-storm-*
+conf/localConf.yaml
+flink-*
+kafka_*
+redis-*
+spark-*-bin-hadoop*
