@@ -30,33 +30,22 @@ import scala.collection.mutable.Buffer
 object KafkaRedisAdvertisingStream {
   def main(args: Array[String]) {
 
-    val commonConfig = Utils.findAndReadConfigFile(args(0), true).asInstanceOf[java.util.Map[String, Any]];
-    val batchSize = commonConfig.get("spark.batchtime") match {
-      case n: Number => n.longValue()
-      case other => throw new ClassCastException(other + " not a Number")
-    }
-    val topic = commonConfig.get("kafka.topic") match {
-      case s: String => s
-      case other => throw new ClassCastException(other + " not a String")
-    }
+    val commonConfig = Map("spark.batchtime" -> 2000,
+                           "kafka.topic" -> "ad-events",
+                           "kafka.brokers" -> Seq("localhost"),
+                           "kafka.port" -> 9092,
+                           "redis.host" -> "localhost")
 
-    val redisHost = commonConfig.get("redis.host") match {
-      case s: String => s
-      case other => throw new ClassCastException(other + " not a String")
-    }
+    val batchSize = commonConfig.getOrElse("spark.batchtime", 2000)
+    val topic = commonConfig.getOrElse("kafka.topic", "ad-events")
+    val redisHost = commonConfig.getOrElse("redis.host", "localhost")
     
     // Create context with 2 second batch interval
     val sparkConf = new SparkConf().setAppName("KafkaRedisAdvertisingStream")
     val ssc = new StreamingContext(sparkConf, Milliseconds(batchSize))
 
-    val kafkaHosts = commonConfig.get("kafka.brokers").asInstanceOf[java.util.List[String]] match {
-      case l: java.util.List[String] => l.asScala.toSeq
-      case other => throw new ClassCastException(other + " not a List[String]")
-    }
-    val kafkaPort = commonConfig.get("kafka.port") match {
-      case n: Number => n.toString()
-      case other => throw new ClassCastException(other + " not a Number")
-    }
+    val kafkaHosts = commonConfig.getOrElse("kafka.brokers", Seq("localhost"))
+    val kafkaPort = commonConfig.getOrElse("kafka.port", 9092)
 
     // Create direct kafka stream with brokers and topics
     val topicsSet = Set(topic)
