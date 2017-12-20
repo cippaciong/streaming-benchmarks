@@ -137,7 +137,7 @@ run() {
 	echo 'storm.ackers: 2' >> $CONF_FILE
 	echo 'spark.batchtime: 2000' >> $CONF_FILE
 	
-    $MVN clean install -Dspark.version="$SPARK_VERSION" -Dkafka.version="$KAFKA_VERSION" -Dflink.version="$FLINK_VERSION" -Dstorm.version="$STORM_VERSION" -Dscala.binary.version="$SCALA_BIN_VERSION" -Dscala.version="$SCALA_BIN_VERSION.$SCALA_SUB_VERSION" -Dapex.version="$APEX_VERSION"
+    $MVN clean install -Dspark.version="$SPARK_VERSION" -Dkafka.version="$KAFKA_VERSION" -Dflink.version="$FLINK_VERSION" -Dstorm.version="$STORM_VERSION" -Dscala.binary.version="$SCALA_BIN_VERSION" -Dscala.version="$SCALA_BIN_VERSION.$SCALA_SUB_VERSION" -Dapex.version="$APEX_VERSION" -DskipTests
 
     #Fetch and build Redis
     REDIS_FILE="$REDIS_DIR.tar.gz"
@@ -156,7 +156,7 @@ run() {
 
     #Fetch Kafka
     KAFKA_FILE="$KAFKA_DIR.tgz"
-    fetch_untar_file "$KAFKA_FILE" "$APACHE_MIRROR/kafka/$KAFKA_VERSION/$KAFKA_FILE"
+    fetch_untar_file "$KAFKA_FILE" "https://archive.apache.org/dist/kafka/$KAFKA_VERSION/$KAFKA_FILE"
 
     #Fetch Storm
     STORM_FILE="$STORM_DIR.tar.gz"
